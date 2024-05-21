@@ -1,0 +1,71 @@
+% Matlab GUI code that will upload the user selected image, by using a slider user can increase or decrease the brightness of the image
+
+% Matlab GUI codes provided by Dr. Goan
+% https://www.academicblock.com
+
+function imageBrightnessAdjuster
+    % Create a figure window
+    fig = figure('Name', 'Image Brightness Adjuster', 'NumberTitle', 'off', ...
+                 'MenuBar', 'none', 'ToolBar', 'none', 'Position', [100, 100, 800, 600]);
+
+    % Add a panel for the image
+    imgPanel = uipanel('Parent', fig, 'Position', [0.1 0.3 0.8 0.6]);
+
+    % Add an axis to display the image
+    ax = axes('Parent', imgPanel);
+    
+    % Add a button to upload an image
+    uploadButton = uicontrol('Style', 'pushbutton', 'String', 'Upload Image', ...
+                             'Position', [100, 50, 100, 30], 'Callback', @uploadImage);
+
+    % Add a slider to adjust brightness
+    brightnessSlider = uicontrol('Style', 'slider', 'Min', -1, 'Max', 1, 'Value', 0, ...
+                                 'Position', [250, 50, 300, 30], 'Callback', @adjustBrightness);
+                             
+    % Add a text label for the slider
+    sliderLabel = uicontrol('Style', 'text', 'Position', [250, 90, 300, 20], ...
+                            'String', 'Adjust Brightness');
+                        
+    % Add a button to save the adjusted image
+    saveButton = uicontrol('Style', 'pushbutton', 'String', 'Save Image', ...
+                           'Position', [600, 50, 100, 30], 'Callback', @saveImage);
+
+    % Initialize variables to store the image and adjusted image
+    img = [];
+    adjustedImg = [];
+
+    function uploadImage(~, ~)
+        % Let the user select an image file
+        [fileName, pathName] = uigetfile({'*.jpg;*.jpeg;*.png;*.bmp', 'Image Files'}, 'Select an Image');
+        if fileName == 0
+            return;
+        end
+        imgPath = fullfile(pathName, fileName);
+        img = imread(imgPath);
+        adjustedImg = img; % Initially, the adjusted image is the same as the original
+        imshow(img, 'Parent', ax);
+        title(ax, 'Original Image');
+    end
+
+    function adjustBrightness(~, ~)
+        if isempty(img)
+            return;
+        end
+        brightnessValue = get(brightnessSlider, 'Value');
+        adjustedImg = img + brightnessValue * 255; % Adjust brightness
+        adjustedImg = uint8(max(min(adjustedImg, 255), 0)); % Clip values to [0, 255]
+        imshow(adjustedImg, 'Parent', ax);
+        title(ax, 'Adjusted Image');
+    end
+
+    function saveImage(~, ~)
+        if isempty(adjustedImg)
+            return;
+        end
+        [fileName, pathName] = uiputfile({'*.jpg', 'JPEG Image'; '*.png', 'PNG Image'; '*.bmp', 'Bitmap Image'}, 'Save Image As');
+        if fileName == 0
+            return;
+        end
+        imwrite(adjustedImg, fullfile(pathName, fileName));
+    end
+end
