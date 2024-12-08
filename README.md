@@ -1,5 +1,8 @@
 # Matlab-GUI-Codes-for-changing-the-brightness-of-the-image
 These Matlab code will enable user to adjust the brightness of the Image
+
+This code is inspired by a article on <a href="https://www.academicblock.com/technology/web-tools/black-and-white-converter">Color to black and white</a> image page.
+
 Codes are provided by Dr. Goan
 https://www.academicblock.com/
 
